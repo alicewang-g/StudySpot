@@ -10,7 +10,7 @@ function Loading() {
         StudySpot is thinking about the best way to use your time.
       </p>
 
-    </div>
+    </div> 
   );
 }
 

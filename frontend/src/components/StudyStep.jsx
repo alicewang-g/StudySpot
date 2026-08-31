@@ -1,38 +1,116 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-function StudyStep({ task, duration }) {
+function StudyStep({
+  task,
+  duration,
+  secondsLeft,
+  setSecondsLeft,
+  completed = false,
+  onStart,
+  onPause,
+  onFinish,
+  isFocusMode = false
+}) {
 
-  const [timeLeft, setTimeLeft] = useState(duration * 60);
-  const [running, setRunning] = useState(false);
+  /*
+    FOCUS MODE TIMER
+   */
 
   useEffect(() => {
 
-    if (!running || timeLeft <= 0) {
+    // Don't run the timer when we're not in focus mode
+    if (!isFocusMode) {
       return;
     }
 
+    // Timer reached zero
+    if (secondsLeft <= 0) {
+      onFinish();
+      return;
+    }
     const timer = setInterval(() => {
-      setTimeLeft(prevTime => prevTime - 1);
+      setSecondsLeft((previous) => previous - 1);
     }, 1000);
-
+    // Stop interval when component changes/unmounts
     return () => clearInterval(timer);
 
-  }, [running, timeLeft]);
+  }, [
+    isFocusMode,
+    secondsLeft,
+    setSecondsLeft,
+    onFinish
+  ]);
 
-  const minutes = Math.floor(timeLeft / 60);
-  const seconds = timeLeft % 60;
+
+  /*
+   * Convert seconds into MM:SS
+   */
+
+  function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(
+      remainingSeconds
+    ).padStart(2, "0")}`;
+  }
+
+
+  /*
+    NORMAL STUDY PLAN
+   */
+  if (!isFocusMode) {
+    return (
+      <div
+        className={`study-step ${
+          completed ? "completed" : ""
+        }`}
+      >
+        <div className="study-step-info">
+          <h3>{task}</h3>
+          <p>
+            {formatTime(secondsLeft)}
+          </p>
+
+        </div>
+
+        {completed ? (
+
+          <div className="completed-message">
+            ✓ Completed
+          </div>
+
+        ) : (
+
+          <button
+            className="start-button"
+            onClick={onStart}
+          >
+            Start
+          </button>
+
+        )}
+
+      </div>
+    );
+  }
+
+
+  /*
+    FOCUS MODE
+   */
 
   return (
-    <div className="study-step">
-
-      <h2>{task}</h2>
+    <div className="focus-timer">
 
       <div className="timer">
-        {minutes}:{seconds.toString().padStart(2, "0")}
+        {formatTime(secondsLeft)}
       </div>
 
-      <button onClick={() => setRunning(!running)}>
-        {running ? "Pause" : "Start"}
+      <button
+        className="pause-button"
+        onClick={onPause}
+      >
+        Pause
       </button>
 
     </div>
@@ -40,3 +118,4 @@ function StudyStep({ task, duration }) {
 }
 
 export default StudyStep;
+
