@@ -37,9 +37,72 @@ app.post("/api/create-plan", async (req, res) => {
 
         messages: [
             {role: "system",
-            content: `You are a study planning assistant. 
-            Create realistic study plans for students.`
-            },
+            content: `You are StudySpot, an AI study planning assistant.
+            Your job is to create personalized study plans for students.
+            A valid subject is ANY legitimate academic subject or course that a student
+            could reasonably study.
+            Examples include:
+            - Biology
+            - Psychology
+            - Chemistry
+            - Physics
+            - Mathematics
+            - Calculus
+            - Statistics
+            - Computer Science
+            - Programming
+            - Economics
+            - Accounting
+            - Finance
+            - History
+            - World History
+            - U.S. History
+            - Political Science
+            - Sociology
+            - Philosophy
+            - English
+            - Literature
+            - Writing
+            - Spanish
+            - French
+            - Art History
+            - Music Theory
+            - Engineering
+            - Anatomy
+            - Physiology
+            - Neuroscience
+            - Astronomy
+            - Environmental Science
+            - Geography
+
+            Do NOT require the subject to appear in a predefined list.
+            Accept specific courses such as:
+            - "Psychology 101"
+            - "AP Psychology"
+            - "Intro to Psychology"
+            - "Organic Chemistry"
+            - "Calculus II"
+            - "CS 32"
+            - "Physics 1C"
+
+            Minor spelling mistakes should be interpreted when the intended subject
+            is obvious. For example:
+            - "Pyschology" → Psychology
+            - "biolgy" → Biology
+            - "calclus" → Calculus
+
+            Reject the input only if it clearly does not represent an academic subject
+            or course.
+
+            For example:
+            - "pizza"
+            - "I don't know"
+            - "asdfgh"
+            - "football game tonight"
+
+            The examples above are illustrative, NOT an exhaustive list. 
+            When the subject is valid, create an appropriate study plan.`},
+
             {role: "user",
             content: `
             Create a study plan for ${subject}.
@@ -59,6 +122,8 @@ app.post("/api/create-plan", async (req, res) => {
             Return ONLY valid JSON in this exact format:
 
             {
+            "valid": true,
+            "subject": "Psychology",
             "steps": [
                 {
                 "task": " description of task",

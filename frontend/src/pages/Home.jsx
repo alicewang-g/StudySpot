@@ -40,7 +40,7 @@ function Home() {
         }
       );
       const data = await response.json();
-      if (!response.ok) {
+      if (!data.valid) {
         setError("That is not a valid subject. Please enter another subject.");
         setLoading(false);
         return;
