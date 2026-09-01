@@ -70,22 +70,17 @@ function App() {
   );*/}
 
   return (
-    <BrowserRouter>
-
+    <BrowserRouter basename = "/StudySpot">
       <Routes>
-
         <Route
           path="/"
           element={<Home />}
         />
-
         <Route
           path="/study-plan"
           element={<StudyPlanPage />}
         />
-
       </Routes>
-
     </BrowserRouter>
   );
 }
