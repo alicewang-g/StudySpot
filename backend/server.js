@@ -11,7 +11,7 @@ const OpenAI = require("openai");
 
 const app = express();
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
@@ -186,7 +186,7 @@ app.post("/api/create-plan", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
 
 
