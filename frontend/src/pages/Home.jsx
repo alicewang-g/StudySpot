@@ -25,7 +25,7 @@ function Home() {
     try {
 
       const response = await fetch(
-        "http://localhost:3001/api/create-plan",
+        "https://studyspot-qmap.onrender.com",
         {
           method: "POST",
 
