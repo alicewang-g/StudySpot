@@ -74,20 +74,15 @@ function StudyStep({
         </div>
 
         {completed ? (
-
           <div className="completed-message">
             ✓ Completed
           </div>
-
         ) : (
-
           <button
             className="start-button"
-            onClick={onStart}
-          >
+            onClick={onStart}>
             Start
           </button>
-
         )}
 
       </div>
