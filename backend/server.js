@@ -35,7 +35,7 @@ app.post("/api/create-plan", upload.single("file"), async (req, res) => {
     const { subject, time, course, exam} = req.body;
 
     console.log("Subject:", subject);
-    console.log("Time:", time);xx
+    console.log("Time:", time);
     console.log("Exam:", exam);
     
     if (req.file) {
