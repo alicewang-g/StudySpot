@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const OpenAI = require("openai");
 const multer = require("multer");
+const pdfParse = require("pdf-parse");
 
 const app = express();
 
@@ -17,7 +18,7 @@ const upload = multer({
   storage: multer.memoryStorage()
 });
 
-//const pdfText = await extractText(req.file.buffer);
+const pdfText = await extractText(req.file.buffer);
 
 app.use(cors());
 app.use(express.json());
@@ -38,11 +39,24 @@ app.post("/api/create-plan", upload.single("file"), async (req, res) => {
     console.log("Time:", time);
     console.log("Exam:", exam);
     
-    if (req.file) {
-      console.log("Uploaded file:", req.file.originalname);
-      console.log("File size:", req.file.size);
-    } else {
-      console.log("No file uploaded");
+    /* * EXTRACT TEXT FROM PDF */ 
+    let uploadedMaterial = ""; 
+    if (req.file) { 
+      console.log( "Uploaded file:", req.file.originalname ); 
+      console.log( "File size:", req.file.size ); 
+      try { 
+        const pdfData = await pdfParse( req.file.buffer ); 
+        uploadedMaterial = pdfData.text; 
+        console.log( "Extracted PDF text length:", uploadedMaterial.length ); 
+        console.log( "First 1000 characters:", uploadedMaterial.substring(0, 1000) ); 
+      } catch (pdfError) { 
+        console.error( "PDF extraction error:", pdfError ); 
+        return res.status(400).json({ 
+          error: "Could not read the uploaded PDF." 
+        }); 
+      } 
+    } else { 
+      console.log("No file uploaded"); 
     }
 
     const response = await openai.chat.completions.create({
@@ -138,8 +152,6 @@ app.post("/api/create-plan", upload.single("file"), async (req, res) => {
             - Use the user uploaded notes to parse what they are learning and generate practice questions based on the notes specifically.
             - If the user uploads textbook files, let the user know what pages they can reference when studying.
 
-            Return ONLY valid JSON in this exact format:
-
             For each study step:
 
             - "task" describes what the student should do.
@@ -155,30 +167,7 @@ app.post("/api/create-plan", upload.single("file"), async (req, res) => {
 
             When referencing uploaded material, use the page numbers from the uploaded PDF.
 
-            {
-            "valid": true,
-            "subject": "Psychology",
-            "steps": [
-                {
-                "task": " description of task",
-                "duration": 15
-                }
-                 "resources": [
-                    {
-                      "type": "uploaded_file",
-                      "title": "Psychology Notes",
-                      "reference": "Pages 12-16"
-                    }
-                  ],
-                  "practice": {
-                    "type": "generated",
-                    "questions": [
-                      "Explain the difference between classical and operant conditioning.",
-                      "Identify the UCS, UCR, CS, and CR in the following scenario..."
-                    ]
-                  }
-              ]
-            }
+            Return ONLY valid JSON matching the schema.
           `}
         ],
       
