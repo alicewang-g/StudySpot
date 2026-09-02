@@ -4,11 +4,6 @@ const express = require("express");
 const cors = require("cors");
 const OpenAI = require("openai");
 
-// console.log(
-//   "API key loaded:",
-//   Boolean(process.env.OPENROUTER_API_KEY)
-// );
-
 const app = express();
 
 const PORT = process.env.PORT || 3001;
@@ -134,14 +129,20 @@ app.post("/api/create-plan", async (req, res) => {
             `}
         ],
       
-      text: {
-        format: {
-          type: "json_schema",
+      response_format: {
+        type: "json_schema",
+        json_schema: {
           name: "study_plan",
           strict: true,
           schema: {
             type: "object",
             properties: {
+              valid: {
+                type: "boolean"
+              },
+              subject: {
+                type: "string"
+              },
               steps: {
                 type: "array",
                 items: {
@@ -159,11 +160,12 @@ app.post("/api/create-plan", async (req, res) => {
                 }
               }
             },
-            required: ["steps"],
+            required: ["valid", "subject", "steps"],
             additionalProperties: false
           }
         }
       }
+
     });
 
     const aiText = response.choices[0].message.content;

@@ -35,6 +35,7 @@ function Home() {
 
           body: JSON.stringify({
             subject: subject,
+            exam: exam,
             time: Number(time)
           })
         }
