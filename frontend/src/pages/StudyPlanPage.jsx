@@ -1,10 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom"; 
-import { useState } from "react"; 
+import { useState, useRef } from "react"; 
+
 import StudyStep from "../components/StudyStep"; 
+import TimerPopup from "../components/TimerPopup";
 
 function StudyPlanPage() { 
   const location = useLocation(); 
   const navigate = useNavigate(); 
+  const timerPopupRef = useRef(null);
   const plan = location.state?.plan; 
   const subject = location.state?.subject; 
   
@@ -13,9 +16,10 @@ function StudyPlanPage() {
   
   // How much time is left for each task 
   const [remainingTimes, setRemainingTimes] = useState(plan ? plan.map((step) => step.duration * 60) : [] ); 
-  // Which tasks have actually been completed 
   
+  // Which tasks have actually been completed 
   const [completedSteps, setCompletedSteps] = useState([]); 
+
   if (!plan) { 
     return ( 
     <div> 
@@ -24,6 +28,11 @@ function StudyPlanPage() {
         </button> 
     </div> ); 
   } 
+
+  function startStep(index) {
+    timerPopupRef.current?.openPopup();
+    setActiveStep(index);
+  }
 
   // Called when the timer reaches zero 
   function completeStep(index) { 
@@ -52,31 +61,45 @@ function StudyPlanPage() {
             <h1> {currentStep.task}
             </h1> 
             <StudyStep 
-            task={currentStep.task} 
-            duration={currentStep.duration} 
-            material={currentStep.material}
-            practice={currentStep.practice}
-            secondsLeft={remainingTimes[activeStep]} 
-            setSecondsLeft={(newTime) => { 
-              setRemainingTimes((previous) => { 
-                const updated = [...previous]; 
-                updated[activeStep] = 
-                typeof newTime === "function" 
-                ? newTime(previous[activeStep]) 
-                : newTime; 
-                return updated; 
-            }); 
-            }} 
-          isFocusMode={true} 
-          onPause={pauseStep} 
-          onFinish={() => completeStep(activeStep)} 
-          /> 
+              task={currentStep.task} 
+              duration={currentStep.duration} 
+              material={currentStep.material}
+              practice={currentStep.practice}
+              secondsLeft={remainingTimes[activeStep]} 
+              setSecondsLeft={(newTime) => { 
+                setRemainingTimes((previous) => { 
+                  const updated = [...previous]; 
+                  updated[activeStep] = 
+                  typeof newTime === "function" 
+                  ? newTime(previous[activeStep]) 
+                  : newTime; 
+                  return updated; 
+                }); 
+              }} 
+              isFocusMode={true} 
+              onPause={pauseStep} 
+              onFinish={() => completeStep(activeStep)} 
+            /> 
+            <TimerPopup
+              ref={timerPopupRef}
+              secondsLeft={
+                activeStep !== null
+                  ? remainingTimes[activeStep]
+                  : 0
+              }
+              task={
+                activeStep !== null
+                  ? plan[activeStep].task
+                  : ""
+              }
+              onPause={pauseStep}
+            />
           </div> 
-          {currentStep?.questions?.length > 0 && (
+          {currentStep.practice?.questions?.length > 0 && (
             <div className="focus-practice">
               <h3>🧠 Practice</h3>
               <ol>
-                {currentStep.questions.map((question, index) => (
+                {currentStep.practice.questions.map((question, index) => (
                   <li key={index}>
                     {question}
                   </li>
@@ -99,15 +122,30 @@ function StudyPlanPage() {
       <div className="study-steps"> 
         {plan.map((step, index) => ( 
           <StudyStep 
-          key={index} 
-          task={step.task} 
-          duration={step.duration} 
-          secondsLeft={remainingTimes[index]}
-          completed={completedSteps.includes(index)} 
-          onStart={() => setActiveStep(index)} 
+            key={index} 
+            task={step.task} 
+            duration={step.duration} 
+            secondsLeft={remainingTimes[index]}
+            completed={completedSteps.includes(index)} 
+            onStart={() => startStep(index)} 
           /> 
         ))} 
+          <TimerPopup
+            ref={timerPopupRef}
+            secondsLeft={
+              activeStep !== null
+                ? remainingTimes[activeStep]
+                : 0
+            }
+            task={
+              activeStep !== null
+                ? plan[activeStep].task
+                : ""
+            }
+            onPause={pauseStep}
+          />
       </div> 
-  </div> ); } 
+  </div> ); 
+  } 
   
 export default StudyPlanPage;
