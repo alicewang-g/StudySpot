@@ -18,8 +18,6 @@ const upload = multer({
   storage: multer.memoryStorage()
 });
 
-const pdfText = await extractText(req.file.buffer);
-
 app.use(cors());
 app.use(express.json());
 
