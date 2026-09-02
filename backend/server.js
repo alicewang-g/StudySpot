@@ -240,7 +240,10 @@ app.post("/api/create-plan", upload.single("file"), async (req, res) => {
   });
     const aiText = response.choices[0].message.content;
     console.log("AI response:", aiText);
-    const plan = JSON.parse(aiText);
+    const cleanedText = aiText
+      .replace(/^```(?:json)?\s*/i, "")
+      .replace(/\s*```$/, ""); //prevents potential additional ```json that AI might send to server
+    const plan = JSON.parse(cleanedText);
     console.log("AI Plan:", plan);
     res.json(plan);
   } catch (error) {
