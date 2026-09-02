@@ -23,21 +23,21 @@ function Home() {
     setError("");
     setLoading(true);
     try {
+      const formData = new FormData();
+
+      formData.append("subject", subject);
+      formData.append("time", Number(time));
+      formData.append("exam", exam)
+
+      if (file) {
+        formData.append("file", file);
+      }
 
       const response = await fetch(
         "https://studyspot-qmap.onrender.com/api/create-plan",
         {
           method: "POST",
-
-          headers: {
-            "Content-Type": "application/json"
-          },
-
-          body: JSON.stringify({
-            subject: subject,
-            exam: exam,
-            time: Number(time)
-          })
+          body: formData
         }
       );
       const data = await response.json();
@@ -83,8 +83,7 @@ function Home() {
           {error}
         </p>)}
         <Upload
-          file={file}
-          setFile={setFile}
+          onFileSelect={setFile}
         />
         <button className="create-plan-button" onClick={createPlan}>
             Create Study Plan

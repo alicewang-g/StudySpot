@@ -3,6 +3,8 @@ import { useEffect } from "react";
 function StudyStep({
   task,
   duration,
+  material,
+  practice,
   secondsLeft,
   setSecondsLeft,
   completed = false,
@@ -28,9 +30,11 @@ function StudyStep({
       onFinish();
       return;
     }
-    const timer = setInterval(() => {
+    {/*const timer = setInterval(() => {
       setSecondsLeft((previous) => previous - 1);
-    }, 1000);
+    }, 1000); */}
+    const endTime = Date.now() + 20 * 60 * 1000;
+    const remaining = Math.max(0,endTime - Date.now());
     // Stop interval when component changes/unmounts
     return () => clearInterval(timer);
 
@@ -70,7 +74,21 @@ function StudyStep({
           <p>
             {formatTime(secondsLeft)}
           </p>
+          {material && material.pages && (
+            <div className="material-reference">
+              <strong>📖 Your Material</strong>
+              <p>Pages {material.pages}</p>
+            </div>
+          )}
+          {practice && practice.questions && practice.questions.length > 0 && (
+            <div className="practice-section">
+              <strong>🧠 Practice</strong>
 
+              <p>
+                {practice.questions.length} practice questions
+              </p>
+            </div>
+          )}
         </div>
 
         {completed ? (

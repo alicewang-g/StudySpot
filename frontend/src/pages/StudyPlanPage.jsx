@@ -45,6 +45,8 @@ function StudyPlanPage() {
           <StudyStep 
           task={plan[activeStep].task} 
           duration={plan[activeStep].duration} 
+          material={step.material}
+          practice={step.practice}
           secondsLeft={remainingTimes[activeStep]} 
           setSecondsLeft={(newTime) => { 
             setRemainingTimes((previous) => { 
@@ -53,22 +55,33 @@ function StudyPlanPage() {
               typeof newTime === "function" 
               ? newTime(previous[activeStep]) 
               : newTime; 
-              
-            return updated; 
-          }); 
-        }} 
-        isFocusMode={true} 
-        onPause={pauseStep} 
-        onFinish={() => completeStep(activeStep)} 
+              return updated; 
+           }); 
+          }} 
+         isFocusMode={true} 
+         onPause={pauseStep} 
+         onFinish={() => completeStep(activeStep)} 
         /> 
         </div> 
+        {practice?.questions?.length > 0 && (
+          <div className="focus-practice">
+            <h3>🧠 Practice</h3>
+            <ol>
+              {practice.questions.map((question, index) => (
+                <li key={index}>
+                  {question}
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
       </div> ); } 
   return ( 
   <div className="study-plan-page"> 
     <button className="back-home-button" onClick={() => navigate("/")} > 
       Back to Home 
     </button> 
-    
+
     <h1>Your Study Plan</h1> 
     <h2>{subject}</h2> 
     <div className="study-steps"> 

@@ -477,6 +477,45 @@ button {
   cursor: pointer;
 }
 
+/*-------------------FLOATING WINDOW ------------*/
+.floating-timer {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+
+  width: 220px;
+  padding: 18px;
+
+  background: white;
+  border-radius: 16px;
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+
+  z-index: 1000;
+}
+
+.floating-timer-header {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.floating-task {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.floating-time {
+  font-size: 36px;
+  font-weight: bold;
+  text-align: center;
+  margin: 15px 0;
+}
+
+.floating-timer button {
+  width: 100%;
+}
+
+/*----------------------*/
 
 .app {
   width: 400px;

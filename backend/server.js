@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const OpenAI = require("openai");
+const multer = require("multer");
 
 const app = express();
 
@@ -11,6 +12,10 @@ const PORT = process.env.PORT || 3001;
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
   apiKey: process.env.OPENROUTER_API_KEY
+});
+
+const upload = multer({
+  storage: multer.memoryStorage()
 });
 
 app.use(cors());
@@ -112,7 +117,8 @@ app.post("/api/create-plan", async (req, res) => {
             - Include active learning such as practice, recall, problem solving, or self-testing when appropriate.
             - Do not make every task the same length.
             - Return only the study plan in the requested structured format. 
-            Determine whether the user's input is a legitimate academic subject, if not respond with "invalid".
+            - Use the user uploaded notes to parse what they are learning and generate practice questions based on the notes specifically.
+            - If the user uploads textbook files, let the user know what pages they can reference when studying.
 
             Return ONLY valid JSON in this exact format:
 
@@ -124,9 +130,24 @@ app.post("/api/create-plan", async (req, res) => {
                 "task": " description of task",
                 "duration": 15
                 }
-            ]
+                 "resources": [
+                    {
+                      "type": "uploaded_file",
+                      "title": "Psychology Notes",
+                      "reference": "Pages 12-16"
+                    }
+                  ],
+
+                  "practice": {
+                    "type": "generated",
+                    "questions": [
+                      "Explain the difference between classical and operant conditioning.",
+                      "Identify the UCS, UCR, CS, and CR in the following scenario..."
+                    ]
+                  }
+              ]
             }
-            `}
+          `}
         ],
       
       response_format: {
