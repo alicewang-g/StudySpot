@@ -41,6 +41,7 @@ function Home() {
           body: formData
         }
       );
+      console.log("File before sending:", file);
       const data = await response.json();
       if (!data.valid) {
         setError("That is not a valid subject. Please enter another subject.");

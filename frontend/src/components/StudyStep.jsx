@@ -30,13 +30,16 @@ function StudyStep({
       onFinish();
       return;
     }
-    {/*const timer = setInterval(() => {
-      setSecondsLeft((previous) => previous - 1);
-    }, 1000); */}
-    const endTime = Date.now() + 20 * 60 * 1000;
-    const remaining = Math.max(0,endTime - Date.now());
-    // Stop interval when component changes/unmounts
-    return () => clearInterval(timer);
+    const timer = setInterval(() => {
+    setSecondsLeft((previous) => {
+      if (previous <= 1) {
+        clearInterval(timer);
+        return 0;
+      }
+      return previous - 1;
+    });
+  }, 1000);
+  return () => clearInterval(timer);
 
   }, [
     isFocusMode,

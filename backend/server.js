@@ -17,6 +17,8 @@ const upload = multer({
   storage: multer.memoryStorage()
 });
 
+//const pdfText = await extractText(req.file.buffer);
+
 app.use(cors());
 app.use(express.json());
 
@@ -33,8 +35,7 @@ app.post("/api/create-plan", upload.single("file"), async (req, res) => {
     const { subject, time, course, exam} = req.body;
 
     console.log("Subject:", subject);
-    console.log("Time:", time);
-    console.log("Time:", time);
+    console.log("Time:", time);xx
     console.log("Exam:", exam);
     
     if (req.file) {
@@ -206,32 +207,19 @@ app.post("/api/create-plan", upload.single("file"), async (req, res) => {
                     duration: {
                       type: "number"
                     },
-                    resources: {
-                      type: "array",
-                      items: {
-                        type: "object",
-                        properties: {
-                          type: {
-                            type: "string"
-                          },
-                          title: {
-                            type: "string"
-                          },
-                          reference: {
-                            type: "string"
-                          }
-                        },
-                        required: ["type", "title", "reference"],
-                        additionalProperties: false
-                      }
+                    material: {
+                      type: "object",
+                      properties: {
+                        pages: {
+                          type: "string"
+                        }
+                      },
+                      required: ["pages"],
+                      additionalProperties: false
                     },
-
                     practice: {
                       type: "object",
                       properties: {
-                        type: {
-                          type: "string"
-                        },
                         questions: {
                           type: "array",
                           items: {
@@ -239,23 +227,28 @@ app.post("/api/create-plan", upload.single("file"), async (req, res) => {
                           }
                         }
                       },
-                      required: ["type", "questions"],
+                      required: ["questions"],
                       additionalProperties: false
                     }
-
                   },
                   required: [
                     "task",
                     "duration",
-                    "resources",
+                    "material",
                     "practice"
                   ],
                   additionalProperties: false
                 }
               }
+            },
+            required: [
+              "valid",
+              "subject",
+              "steps"
+            ],
+            additionalProperties: false
           }
         }
-      }
       }
   });
     const aiText = response.choices[0].message.content;
