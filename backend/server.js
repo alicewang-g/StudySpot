@@ -91,6 +91,11 @@ app.post("/api/create-plan", async (req, res) => {
             - "biolgy" → Biology
             - "calclus" → Calculus
 
+            Abreviations are excepted. For example:
+            - "CS" → Computer science
+            - "Bio" → Biology
+            - "Psych" → Psychology
+
             Reject the input only if it clearly does not represent an academic subject
             or course.
 

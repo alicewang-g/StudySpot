@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function Upload({onFileSelect }) {
+function Upload({onFileSelect}) {
   const [fileName, setFileName] = useState("");
   function handleFileChange(event) {
     const selectedFile = event.target.files[0];
@@ -60,7 +60,7 @@ function Upload({onFileSelect }) {
       </label>
 
      {/* file alr uploaded */}
-      {file && (
+      {onFileSelect&& (
         <div className="selected-file"> 
           <div>
             <strong>{file.name}</strong>
