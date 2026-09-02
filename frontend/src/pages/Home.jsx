@@ -27,6 +27,7 @@ function Home() {
 
       formData.append("subject", subject);
       formData.append("time", Number(time));
+      formData.append("course", course);
       formData.append("exam", exam)
 
       if (file) {

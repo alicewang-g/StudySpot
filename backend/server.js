@@ -1,4 +1,3 @@
-
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -25,12 +24,25 @@ app.get("/", (req, res) => {
   res.send("Backend is working!");
 });
 
-app.post("/api/create-plan", async (req, res) => {
+app.post("/api/create-plan", upload.single("file"), async (req, res) => {
   try {
-    const { subject, time } = req.body;
+    console.log("===== CREATE PLAN REQUEST =====");
+    console.log("req.body:", req.body);
+    console.log("req.file:", req.file);
+
+    const { subject, time, course, exam} = req.body;
 
     console.log("Subject:", subject);
     console.log("Time:", time);
+    console.log("Time:", time);
+    console.log("Exam:", exam);
+    
+    if (req.file) {
+      console.log("Uploaded file:", req.file.originalname);
+      console.log("File size:", req.file.size);
+    } else {
+      console.log("No file uploaded");
+    }
 
     const response = await openai.chat.completions.create({
         model: "openrouter/free",
@@ -91,7 +103,7 @@ app.post("/api/create-plan", async (req, res) => {
             - "biolgy" → Biology
             - "calclus" → Calculus
 
-            Abreviations are excepted. For example:
+            Abreviations are accepted. For example:
             - "CS" → Computer science
             - "Bio" → Biology
             - "Psych" → Psychology
@@ -127,6 +139,21 @@ app.post("/api/create-plan", async (req, res) => {
 
             Return ONLY valid JSON in this exact format:
 
+            For each study step:
+
+            - "task" describes what the student should do.
+            - "duration" is the number of minutes.
+            - "resources" contains references to the uploaded material.
+            - "practice" contains practice questions generated from the uploaded material.
+
+            If the uploaded material does not contain useful information for a particular
+            task, resources may be an empty array.
+
+            If practice questions would not be useful for a particular task,
+            practice.questions may be an empty array.
+
+            When referencing uploaded material, use the page numbers from the uploaded PDF.
+
             {
             "valid": true,
             "subject": "Psychology",
@@ -142,7 +169,6 @@ app.post("/api/create-plan", async (req, res) => {
                       "reference": "Pages 12-16"
                     }
                   ],
-
                   "practice": {
                     "type": "generated",
                     "questions": [
@@ -179,34 +205,66 @@ app.post("/api/create-plan", async (req, res) => {
                     },
                     duration: {
                       type: "number"
+                    },
+                    resources: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          type: {
+                            type: "string"
+                          },
+                          title: {
+                            type: "string"
+                          },
+                          reference: {
+                            type: "string"
+                          }
+                        },
+                        required: ["type", "title", "reference"],
+                        additionalProperties: false
+                      }
+                    },
+
+                    practice: {
+                      type: "object",
+                      properties: {
+                        type: {
+                          type: "string"
+                        },
+                        questions: {
+                          type: "array",
+                          items: {
+                            type: "string"
+                          }
+                        }
+                      },
+                      required: ["type", "questions"],
+                      additionalProperties: false
                     }
+
                   },
-                  required: ["task", "duration"],
+                  required: [
+                    "task",
+                    "duration",
+                    "resources",
+                    "practice"
+                  ],
                   additionalProperties: false
                 }
               }
-            },
-            required: ["valid", "subject", "steps"],
-            additionalProperties: false
           }
         }
       }
-
-    });
-
+      }
+  });
     const aiText = response.choices[0].message.content;
-
     console.log("AI response:", aiText);
-
     const plan = JSON.parse(aiText);
-
     console.log("AI Plan:", plan);
-
     res.json(plan);
-
   } catch (error) {
     console.error("AI Error:", error);
-
     res.status(500).json({
       error: error.message
     });

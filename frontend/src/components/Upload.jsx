@@ -1,73 +1,81 @@
 import { useState } from "react";
 
-function Upload({onFileSelect}) {
-  const [fileName, setFileName] = useState("");
+function Upload({ onFileSelect }) {
+  const [selectedFile, setSelectedFile] = useState(null);
+
   function handleFileChange(event) {
-    const selectedFile = event.target.files[0];
-    if (!selectedFile) {
+    const file = event.target.files[0];
+
+    if (!file) {
       return;
     }
+
     // Only allow PDF files
-    if (selectedFile.type !== "application/pdf") {
+    if (file.type !== "application/pdf") {
       alert("Please upload a PDF file.");
       return;
     }
+
     // Limit file size to 20 MB
-    if (selectedFile.size > 20 * 1024 * 1024) {
+    if (file.size > 20 * 1024 * 1024) {
       alert("Please upload a PDF smaller than 20 MB.");
       return;
     }
-    setFile(selectedFile);
+
+    setSelectedFile(file);
     onFileSelect(file);
   }
 
   function removeFile() {
-    setFile(null);
+    setSelectedFile(null);
+    onFileSelect(null);
   }
 
   return (
     <div className="upload-container">
+
       <h2>Study Materials</h2>
+
       <p className="upload-description">
         Upload your textbook, lecture notes, or study materials
         so StudySpot can create a more personalized plan.
       </p>
 
-      <label className="upload-box">
-        <span className="upload-icon">↑</span>
+      {!selectedFile && (
+        <label className="upload-box">
 
-        <span className="upload-title">
-          Upload a PDF
-        </span>
+          <span className="upload-icon">↑</span>
 
-        <span className="upload-subtitle">
-          Click to browse your files
-        </span>
+          <span className="upload-title">
+            Upload a PDF
+          </span>
 
-        <input
-        id="file-upload"
-        type="file"
-        accept=".pdf"
-        onChange={handleFileChange}
-        hidden
-        />
+          <span className="upload-subtitle">
+            Click to browse your files
+          </span>
 
-        {fileName && (
-          <p className="uploaded-file">
-            ✓ {fileName}
-          </p>
-        )}
-      </label>
+          <input
+            id="file-upload"
+            type="file"
+            accept=".pdf"
+            onChange={handleFileChange}
+            hidden
+          />
 
-     {/* file alr uploaded */}
-      {onFileSelect&& (
-        <div className="selected-file"> 
+        </label>
+      )}
+
+      {selectedFile && (
+        <div className="selected-file">
+
           <div>
-            <strong>{onFileSelect.name}</strong>
+            <strong>{selectedFile.name}</strong>
+
             <p>
-              {(onFileSelect.size / (1024 * 1024)).toFixed(2)} MB
+              {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
             </p>
           </div>
+
           <button
             type="button"
             onClick={removeFile}
@@ -75,6 +83,7 @@ function Upload({onFileSelect}) {
           >
             Remove
           </button>
+
         </div>
       )}
 
@@ -83,3 +92,4 @@ function Upload({onFileSelect}) {
 }
 
 export default Upload;
+
