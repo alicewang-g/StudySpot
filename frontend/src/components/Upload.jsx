@@ -63,9 +63,9 @@ function Upload({onFileSelect}) {
       {onFileSelect&& (
         <div className="selected-file"> 
           <div>
-            <strong>{file.name}</strong>
+            <strong>{onFileSelect.name}</strong>
             <p>
-              {(file.size / (1024 * 1024)).toFixed(2)} MB
+              {(onFileSelect.size / (1024 * 1024)).toFixed(2)} MB
             </p>
           </div>
           <button
