@@ -31,8 +31,12 @@ function StudyPlanPage() {
   } 
 
   function startStep(index) {
-    timerPopupRef.current?.openPopup();
     setActiveStep(index);
+    // Removed timerPopupRef.current?.openPopup(); from startStep
+  }
+
+  function openFloatingTimer() {
+    timerPopupRef.current?.openPopup();
   }
 
   // Called when the timer reaches zero 
@@ -50,8 +54,6 @@ function StudyPlanPage() {
     function pauseStep() { 
     // Simply leave focus mode. 
       setActiveStep(null); 
-      // Open the floating timer 
-      timerPopupRef.current?.openPopup();
     } 
 
     function togglePractice(index) { 
@@ -63,132 +65,147 @@ function StudyPlanPage() {
       }); 
     
     }
+  // Added backwards compatibility for 'resources' format
+  const material =currentStep.material || currentStep.resources;
 
     // If a task is currently active, show focus mode 
+  if (activeStep !== null) {
+    //Extracted current step to a variable
+    const currentStep = plan[activeStep];
+
     return (
-    <div className="study-plan-page">
+      <div className="focus-mode">
 
-      <TimerPopup
-        ref={timerPopupRef}
-        secondsLeft={
-          activeStep !== null
-            ? remainingTimes[activeStep]
-            : 0
-        }
-        task={
-          activeStep !== null
-            ? plan[activeStep].task
-            : ""
-        }
-        onPause={pauseStep}
-      />
+        {/* TimerPopup relocated inside focus-mode conditional */}
+        <TimerPopup
+          ref={timerPopupRef}
+          secondsLeft={remainingTimes[activeStep]}
+          task={currentStep.task}
+          onPause={pauseStep}
+        />
 
-      {/*-------------- FOCUS MODE --------------- */}
+        <div className="focus-content">
 
-      {activeStep !== null ? (
-        <div className="focus-mode">
+          <p className="focus-label">
+            STUDYING
+          </p>
 
-          <div className="focus-content">
+          <h1>
+            {/* [CHANGED]: Uses currentStep variable */}
+            {currentStep.task}
+          </h1>
 
-            <p className="focus-label">
-              STUDYING
-            </p>
+          <StudyStep
+            /* [CHANGED]: Uses currentStep variable & normalized material prop */
+            task={currentStep.task}
+            duration={currentStep.duration}
+            material={material}
+            practice={currentStep.practice}
+            secondsLeft={remainingTimes[activeStep]}
+            setSecondsLeft={(newTime) => {
+              setRemainingTimes((previous) => {
+                const updated = [...previous];
 
-            <h1>
-              {plan[activeStep].task}
-            </h1>
+                updated[activeStep] =
+                  typeof newTime === "function"
+                    ? newTime(previous[activeStep])
+                    : newTime;
 
-            <StudyStep
-              task={plan[activeStep].task}
-              duration={plan[activeStep].duration}
-              material={plan[activeStep].material}
-              practice={plan[activeStep].practice}
-              secondsLeft={remainingTimes[activeStep]}
-              setSecondsLeft={(newTime) => {
-                setRemainingTimes((previous) => {
-                  const updated = [...previous];
+                return updated;
+              });
+            }}
+            isFocusMode={true}
+            onPause={pauseStep}
+            onFinish={() => completeStep(activeStep)}
+          />
 
-                  updated[activeStep] =
-                    typeof newTime === "function"
-                      ? newTime(previous[activeStep])
-                      : newTime;
-
-                  return updated;
-                });
-              }}
-              isFocusMode={true}
-              onPause={pauseStep}
-              onFinish={() => completeStep(activeStep)}
-            />
-
-            {/* Study Material */}
-            {plan[activeStep].material?.pages && (
-              <div className="focus-material">
-                <h3>📖 Study Material</h3>
-                <p>
-                  Pages {plan[activeStep].material.pages}
-                </p>
-              </div>
-            )}
-
-            {/* Practice Questions */}
-            {plan[activeStep].practice?.questions?.length > 0 && (
-              <div className="focus-practice">
-
-                <h3>🧠 Practice Questions</h3>
-
-                <ol>
-                  {plan[activeStep].practice.questions.map(
-                    (question, index) => (
-                      <li key={index}>
-                        {question}
-                      </li>
-                    )
-                  )}
-                </ol>
-
-              </div>
-            )}
-
-          </div>
-        </div>
-
-      ) : (
-
-        /*------------REGULAR STUDY PLAN----------*/
-
-        <div className="study-plan-content">
-
+          {/* Manual button to trigger floating popup */}
           <button
-            className="back-home-button"
-            onClick={() => navigate("/")}
+            className="open-floating-timer-button"
+            onClick={openFloatingTimer}
           >
-            Back to Home
+            Open Floating Timer
           </button>
 
-          <h1>Your Study Plan</h1>
+          {/* Study Material */}
+          {/* Updated conditional check & added fallback paragraph */}
+          {material && (
+            <div className="focus-material">
+              <h3>📖 Study Material</h3>
+              {material.pages ? (
+                <p>
+                  Pages {material.pages}
+                </p>
+              ) : (
+                <p>
+                  Your uploaded study material is being used
+                  for this task.
+                </p>
+              )}
+            </div>
+          )}
 
-          <h2>{subject}</h2>
+          {/* Practice Questions */}
+          {/* Uses currentStep variable */}
+          {currentStep.practice?.questions?.length > 0 && (
+            <div className="focus-practice">
+              <h3>🧠 Practice Questions</h3>
+              <ol>
+                {currentStep.practice.questions.map(
+                  (question, index) => (
+                    <li key={index}>
+                      {question}
+                    </li>
+                  )
+                )}
+              </ol>
 
-          <div className="study-steps">
+            </div>
+          )}
 
-            {plan.map((step, index) => (
+        </div>
+      </div>
+    );
+  }
+
+  /*-------REGULAR STUDY PLAN--------*/
+
+  return (
+    <div className="study-plan-page">
+      {/* TimerPopup component removed from top-level layout */}
+
+      <div className="study-plan-content">
+
+        <button
+          className="back-home-button"
+          onClick={() => navigate("/")}
+        >
+          Back to Home
+        </button>
+
+        <h1>Your Study Plan</h1>
+
+        <h2>{subject}</h2>
+
+        <div className="study-steps">
+
+          {plan.map((step, index) => {
+            return (
               <div
                 key={index}
                 className="study-step-container"
               >
-
                 <StudyStep
                   task={step.task}
                   duration={step.duration}
-                  material={step.material}
+                  material={material}
                   practice={step.practice}
                   secondsLeft={remainingTimes[index]}
                   completed={completedSteps.includes(index)}
                   onStart={() => startStep(index)}
                 />
 
-                {/* Practice Question Button */}
+                {/* Practice Questions */}
                 {step.practice?.questions?.length > 0 && (
                   <>
                     <button
@@ -200,7 +217,6 @@ function StudyPlanPage() {
                         : `View Practice Questions (${step.practice.questions.length})`}
                     </button>
 
-                    {/* Expanded Practice Questions */}
                     {expandedPractice.includes(index) && (
                       <div className="practice-preview">
                         <h4>
@@ -220,12 +236,12 @@ function StudyPlanPage() {
                   </>
                 )}
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
-      )}
+      </div>
     </div>
   );
-} 
+}
   
 export default StudyPlanPage;
