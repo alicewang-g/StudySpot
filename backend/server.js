@@ -45,8 +45,8 @@ app.post("/api/create-plan", upload.single("file"), async (req, res) => {
       try { 
         const pdfData = await pdfParse( req.file.buffer ); 
         uploadedMaterial = pdfData.text; 
-        console.log( "Extracted PDF text length:", uploadedMaterial.length ); 
-        console.log( "First 1000 characters:", uploadedMaterial.substring(0, 1000) ); 
+        // console.log( "Extracted PDF text length:", uploadedMaterial.length ); 
+        // console.log( "First 1000 characters:", uploadedMaterial.substring(0, 1000) ); 
       } catch (pdfError) { 
         console.error( "PDF extraction error:", pdfError ); 
         return res.status(400).json({ 
@@ -165,7 +165,7 @@ app.post("/api/create-plan", upload.single("file"), async (req, res) => {
 
             When referencing uploaded material, use the page numbers from the uploaded PDF.
 
-            Return ONLY valid JSON matching the schema.
+            Return ONLY valid JSON matching the schema.  Do not include any other things before the {.
           `}
         ],
       
