@@ -83,15 +83,14 @@ function StudyStep({
               <p>Pages {material.pages}</p>
             </div>
           )}
-          {practice && practice.questions && practice.questions.length > 0 && (
+          {/*{practice && practice.questions && practice.questions.length > 0 && (
             <div className="practice-section">
-              <strong>🧠 Practice</strong>
-
               <p>
                 {practice.questions.length} practice questions
               </p>
             </div>
-          )}
+            
+          )}*/}
         </div>
 
         {completed ? (

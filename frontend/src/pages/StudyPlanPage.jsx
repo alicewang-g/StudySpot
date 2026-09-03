@@ -125,7 +125,6 @@ function StudyPlanPage() {
             {plan[activeStep].material?.pages && (
               <div className="focus-material">
                 <h3>📖 Study Material</h3>
-
                 <p>
                   Pages {plan[activeStep].material.pages}
                 </p>
@@ -204,11 +203,9 @@ function StudyPlanPage() {
                     {/* Expanded Practice Questions */}
                     {expandedPractice.includes(index) && (
                       <div className="practice-preview">
-
                         <h4>
                           🧠 Practice Questions
                         </h4>
-
                         <ol>
                           {step.practice.questions.map(
                             (question, questionIndex) => (
@@ -218,17 +215,13 @@ function StudyPlanPage() {
                             )
                           )}
                         </ol>
-
                       </div>
                     )}
                   </>
                 )}
-
               </div>
             ))}
-
           </div>
-
         </div>
       )}
     </div>

@@ -302,16 +302,16 @@ button {
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
-  text-align: left;
+  text-align: center;
 }
 
 .study-plan-content h1 {
-  text-align: left;
+  text-align: center;
   color: #356ae6;
 }
 
 .study-plan-content h2 {
-  text-align: left;
+  text-align: center;
   color: #5a6b85;
   margin-bottom: 40px;
 }
@@ -426,6 +426,7 @@ button {
 
 .practice-preview h4 {
   margin-top: 0;
+  font-size: 20px;
   color: #26364d;
 }
 
