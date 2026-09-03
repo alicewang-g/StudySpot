@@ -99,7 +99,11 @@ const TimerPopup = forwardRef(
     } 
   }, [secondsLeft, task]);
 
-  return null; 
+  return (
+    <button onClick={openPopup}>
+      Open Floating Timer
+    </button>
+  ); 
   {/*(
     <button onClick={openPopup}>
       Open Floating Timer

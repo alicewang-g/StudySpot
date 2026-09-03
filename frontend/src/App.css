@@ -396,7 +396,6 @@ button {
   display: block;
   margin-top: 10px;
   padding: 10px 16px;
-
   border: none;
   border-radius: 8px;
 
@@ -405,7 +404,6 @@ button {
 
   font-size: 14px;
   font-weight: 600;
-
   cursor: pointer;
 }
 
@@ -448,12 +446,14 @@ button {
   left: 0;
   width: 100vw;
   height: 100vh;
+  overflow-y: auto;
   background: #111827;
   display: flex;
-  align-items: center;
   justify-content: center;
   color: white;
   z-index: 9999;
+  box-sizing: border-box;
+  padding: 60px 20px;
 }
 
 .focus-content {
@@ -565,18 +565,13 @@ button {
 
 /*-------------------FLOATING WINDOW ------------*/
 .floating-timer {
-  position: fixed;
   bottom: 25px;
   right: 25px;
-
   width: 220px;
   padding: 18px;
-
   background: white;
   border-radius: 16px;
-
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-
   z-index: 1000;
 }
 
@@ -600,20 +595,6 @@ button {
 .floating-timer button {
   width: 100%;
 }
-
-/*-------------Study Plan page----------*/
-.study-plan-content { 
-  width: 100%; 
-  max-width: 900px; 
-  margin: 0 auto; 
-  text-align: left; 
-} 
-
-.study-plan-content h1, 
-.study-plan-content h2 { 
-  text-align: left; 
-}
-
 
 /*----------------------*/
 

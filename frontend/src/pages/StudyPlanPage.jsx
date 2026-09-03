@@ -32,12 +32,9 @@ function StudyPlanPage() {
 
   function startStep(index) {
     setActiveStep(index);
-    // Removed timerPopupRef.current?.openPopup(); from startStep
-  }
-
-  function openFloatingTimer() {
     timerPopupRef.current?.openPopup();
   }
+
 
   // Called when the timer reaches zero 
   function completeStep(index) { 
@@ -65,27 +62,17 @@ function StudyPlanPage() {
       }); 
     
     }
-  // Added backwards compatibility for 'resources' format
-  const material =currentStep.material || currentStep.resources;
 
     // If a task is currently active, show focus mode 
   if (activeStep !== null) {
     //Extracted current step to a variable
     const currentStep = plan[activeStep];
+  // Added backwards compatibility for 'resources' format
+    const material =currentStep.material || currentStep.resources;
 
     return (
       <div className="focus-mode">
-
-        {/* TimerPopup relocated inside focus-mode conditional */}
-        <TimerPopup
-          ref={timerPopupRef}
-          secondsLeft={remainingTimes[activeStep]}
-          task={currentStep.task}
-          onPause={pauseStep}
-        />
-
         <div className="focus-content">
-
           <p className="focus-label">
             STUDYING
           </p>
@@ -118,14 +105,6 @@ function StudyPlanPage() {
             onPause={pauseStep}
             onFinish={() => completeStep(activeStep)}
           />
-
-          {/* Manual button to trigger floating popup */}
-          <button
-            className="open-floating-timer-button"
-            onClick={openFloatingTimer}
-          >
-            Open Floating Timer
-          </button>
 
           {/* Study Material */}
           {/* Updated conditional check & added fallback paragraph */}
@@ -162,7 +141,20 @@ function StudyPlanPage() {
 
             </div>
           )}
-
+          <TimerPopup
+              ref={timerPopupRef}
+              secondsLeft={
+                activeStep !== null
+                  ? remainingTimes[activeStep]
+                  : 0
+              }
+              task={
+                activeStep !== null
+                  ? plan[activeStep].task
+                  : ""
+              }
+              onPause={pauseStep}
+          />
         </div>
       </div>
     );
@@ -190,6 +182,8 @@ function StudyPlanPage() {
         <div className="study-steps">
 
           {plan.map((step, index) => {
+            // Added backwards compatibility for 'resources' format
+            const material = step.material || step.resources;
             return (
               <div
                 key={index}
