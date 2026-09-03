@@ -113,24 +113,10 @@ button {
   cursor: pointer;
 }
 
-.study-plan-page {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 40px;
-}
-
 .study-steps {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
-.study-step {
-  padding: 25px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  background: white;
-  box-shadow: 0 4px 10px rgba(255, 253, 253, 0.953);
 }
 
 .study-step h2 {
@@ -244,7 +230,7 @@ button {
 
 .create-plan-button:hover {
   background: #3d6fdb;
-  transform: trgb(88, 128, 214)eY(-1px);
+  transform: translateY(-1px);
   box-shadow: 0 8px 18px rgba(79, 128, 237, 0.3);
 }
 
@@ -312,13 +298,20 @@ button {
   background: #f4f9ff;
 }
 
-.study-plan-page h1 {
-  text-align: center;
+.study-plan-content {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.study-plan-content h1 {
+  text-align: left;
   color: #356ae6;
 }
 
-.study-plan-page h2 {
-  text-align: center;
+.study-plan-content h2 {
+  text-align: left;
   color: #5a6b85;
   margin-bottom: 40px;
 }
@@ -332,7 +325,12 @@ button {
 }
 
 
+
 /* ---------------- STUDY STEP ---------------- */
+
+.study-step-container {
+  width: 100%;
+}
 
 .study-step {
   display: flex;
@@ -342,6 +340,10 @@ button {
   background: white;
   border-radius: 16px;
   box-shadow: 0 5px 20px rgba(50, 80, 130, 0.1);
+}
+
+.study-step-info {
+  flex: 1;
 }
 
 .study-step-info h3 {
@@ -388,12 +390,59 @@ button {
   font-weight: bold;
 }
 
+/* ---------------- PRACTICE QUESTIONS ---------------- */
+
+.practice-toggle-button {
+  display: block;
+  margin-top: 10px;
+  padding: 10px 16px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #dce8ff;
+  color: #356ae6;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.practice-toggle-button:hover {
+  background: #cbdcff;
+}
+
+.practice-preview {
+  margin-top: 10px;
+  padding: 18px;
+
+  background: white;
+  border-radius: 12px;
+
+  text-align: left;
+  box-shadow: 0 3px 12px rgba(50, 80, 130, 0.08);
+}
+
+.practice-preview h4 {
+  margin-top: 0;
+  color: #26364d;
+}
+
+.practice-preview ol {
+  padding-left: 25px;
+}
+
+.practice-preview li {
+  margin-bottom: 10px;
+  color: #4a5568;
+  line-height: 1.5;
+}
 
 /* ---------------- FOCUS MODE ---------------- */
 
 .focus-mode {
   position: fixed;
-
   top: 0;
   left: 0;
   width: 100vw;
@@ -407,7 +456,6 @@ button {
 }
 
 .focus-content {
-
   max-width: 800px;
   text-align: center;
 }
@@ -462,6 +510,43 @@ button {
   color: #111827;
 }
 
+/* ---------------- FOCUS MATERIAL ---------------- */
+
+.focus-material {
+  margin-top: 30px;
+  padding: 18px;
+  border-radius: 12px;
+  background: #1f2937;
+  text-align: left;
+}
+
+.focus-material h3 {
+  margin-top: 0;
+}
+
+
+/* ---------------- FOCUS PRACTICE ---------------- */
+
+.focus-practice {
+  margin-top: 25px;
+  padding: 20px;
+  border-radius: 12px;
+  background: #1f2937;
+  text-align: left;
+}
+
+.focus-practice h3 {
+  margin-top: 0;
+}
+
+.focus-practice ol {
+  padding-left: 25px;
+}
+
+.focus-practice li {
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
 
 /* ---------------- BACK TO HOME ---------------- */
 
@@ -515,7 +600,22 @@ button {
   width: 100%;
 }
 
+/*-------------Study Plan page----------*/
+.study-plan-content { 
+  width: 100%; 
+  max-width: 900px; 
+  margin: 0 auto; 
+  text-align: left; 
+} 
+
+.study-plan-content h1, 
+.study-plan-content h2 { 
+  text-align: left; 
+}
+
+
 /*----------------------*/
+
 
 .app {
   width: 400px;
