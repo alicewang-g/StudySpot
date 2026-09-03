@@ -43,7 +43,7 @@ function Home() {
       );
       console.log("File before sending:", file);
       const data = await response.json();
-      if (!data.valid) {
+      if (data.valid === false) {
         setError("That is not a valid subject. Please enter another subject.");
         setLoading(false);
         return;

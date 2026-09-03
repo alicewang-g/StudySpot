@@ -149,23 +149,27 @@ app.post("/api/create-plan", upload.single("file"), async (req, res) => {
             - Return only the study plan in the requested structured format. 
             - Use the user uploaded notes to parse what they are learning and generate practice questions based on the notes specifically.
             - If the user uploads textbook files, let the user know what pages they can reference when studying.
-
-            For each study step:
-
-            - "task" describes what the student should do.
-            - "duration" is the number of minutes.
-            - "resources" contains references to the uploaded material.
-            - "practice" contains practice questions generated from the uploaded material.
-
-            If the uploaded material does not contain useful information for a particular
-            task, resources may be an empty array.
-
-            If practice questions would not be useful for a particular task,
-            practice.questions may be an empty array.
-
-            When referencing uploaded material, use the page numbers from the uploaded PDF.
-
-            Return ONLY valid JSON matching the schema.  Do not include any other things before the {.
+            - Use the "material" field to reference the uploaded material.
+            - If you can identify the PDF pages containing relevant information, put them in:
+                "material": {
+                  "pages": "12-16"
+                }
+            - If there is no relevant uploaded material for a task, use:
+                "material": {
+                  "pages": ""
+                }
+            - Do NOT invent page numbers.
+            - Put practice questions inside:
+                "practice": {
+                  "questions": [...]
+                }
+            - Every response MUST contain:
+              "valid",
+              "subject",
+              "steps"
+            - "valid" must be true if the subject is a legitimate academic subject or course.
+            - "subject" should contain the normalized subject name.
+            - Return ONLY valid JSON. Do NOT wrap the JSON in Markdown code fences.
           `}
         ],
       

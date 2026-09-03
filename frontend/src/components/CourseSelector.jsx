@@ -39,8 +39,15 @@ function CourseSelector({
         <option value="Other">
           Other
         </option>
-
       </select>
+      {exam === "Other" && (
+        <input
+          type="text"
+          value={exam}
+          onChange={(event) => setExam(event.target.value)}
+          placeholder="Enter your exam"
+        />
+      )}
 
     </div>
   );
