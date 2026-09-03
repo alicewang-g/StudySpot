@@ -2,7 +2,9 @@ function CourseSelector({
   course,
   setCourse,
   exam,
-  setExam
+  setExam,
+  customExam,
+  setCustonExam
 }) {
 
   return (
@@ -43,12 +45,11 @@ function CourseSelector({
       {exam === "Other" && (
         <input
           type="text"
-          value={exam}
-          onChange={(event) => setExam(event.target.value)}
+          value={customExam}
+          onChange={(event) => setCustomExam(event.target.value)}
           placeholder="Enter your exam"
         />
       )}
-
     </div>
   );
 }

@@ -170,6 +170,26 @@ app.post("/api/create-plan", upload.single("file"), async (req, res) => {
             - "valid" must be true if the subject is a legitimate academic subject or course.
             - "subject" should contain the normalized subject name.
             - Return ONLY valid JSON. Do NOT wrap the JSON in Markdown code fences.
+
+            The format should look like this:
+            {
+              "valid": true,
+              "subject": "Psychology",
+              "steps": [
+                task: "Review linked lists",
+                duration: 10,
+                material: {
+                  pages: "25-32"
+                },
+                practice: {
+                  questions: [
+                    "What is a node?",
+                    "How do you insert a node at the beginning?",
+                    "What happens when a node is deleted?"
+                  ]
+                }
+              ]
+            }
           `}
         ],
       

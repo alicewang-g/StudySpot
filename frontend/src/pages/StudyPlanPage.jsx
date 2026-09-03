@@ -50,6 +50,16 @@ function StudyPlanPage() {
     // Simply leave focus mode. 
     // We DO NOT mark the task as complete. 
     setActiveStep(null); } 
+
+    function togglePractice(index) { 
+      setExpandedPractice((previous) => { 
+        if (previous.includes(index)) { 
+          return previous.filter((item) => item !== index); 
+        } 
+        return [...previous, index]; 
+      }); 
+    
+    }
     // If a task is currently active, show focus mode 
     if (activeStep !== null) { 
       const currentStep = plan[activeStep];
@@ -125,11 +135,31 @@ function StudyPlanPage() {
             key={index} 
             task={step.task} 
             duration={step.duration} 
+            material={step.material}
+            practice={step.practice}
             secondsLeft={remainingTimes[index]}
             completed={completedSteps.includes(index)} 
             onStart={() => startStep(index)} 
           /> 
         ))} 
+        {step.practice?.questions?.length > 0 && ( 
+            <button className="practice-toggle-button" 
+            onClick={() => togglePractice(index)} > 
+            {expandedPractice.includes(index) 
+            ? "Hide Practice Questions" 
+            : `View Practice Questions (${step.practice.questions.length})`} 
+            </button> 
+          )}
+          {expandedPractice.includes(index) && ( 
+            <div className="practice-preview"> 
+              <ol> {step.practice.questions.map((question, questionIndex) => ( 
+                <li key={questionIndex}> 
+                  {question} 
+                </li> 
+              ))} 
+              </ol> 
+            </div> 
+          )}
           <TimerPopup
             ref={timerPopupRef}
             secondsLeft={
