@@ -14,7 +14,9 @@ function Home() {
   const [error, setError] = useState("");
   const [course, setCourse] = useState("");
   const [exam, setExam] = useState("");
-  const [file, setFile] = useState(null);
+  const [customExam, setCustomExam] = useState("");
+  const [school, setSchool] = useState("");
+  const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -28,10 +30,13 @@ function Home() {
       formData.append("subject", subject);
       formData.append("time", Number(time));
       formData.append("course", course);
-      formData.append("exam", exam)
-
-      if (file) {
-        formData.append("file", file);
+      formData.append("school", school);
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
+      if (course.trim() && !school.trim()) {
+        setError("Please enter your school if you entered a course.");
+        return;
       }
 
       const response = await fetch(
@@ -41,7 +46,7 @@ function Home() {
           body: formData
         }
       );
-      console.log("File before sending:", file);
+      console.log("File before sending:", files);
       const data = await response.json();
       if (data.valid === false) {
         setError("That is not a valid subject. Please enter another subject.");
@@ -74,8 +79,8 @@ function Home() {
         <CourseSelector
           course={course}
           setCourse={setCourse}
-          exam={exam}
-          setExam={setExam}
+          school={school}
+          setSchool={setSchool}
         />
         <TimeSelector
           time={time}
@@ -84,8 +89,9 @@ function Home() {
         {error && (<p className="error-message">
           {error}
         </p>)}
-        <Upload
-          onFileSelect={setFile}
+        <Upload 
+          files={files} 
+          setFiles={setFiles} 
         />
         <button className="create-plan-button" onClick={createPlan}>
             Create Study Plan

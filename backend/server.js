@@ -25,11 +25,11 @@ app.get("/", (req, res) => {
   res.send("Backend is working!");
 });
 
-app.post("/api/create-plan", upload.single("file"), async (req, res) => {
+app.post("/api/create-plan", upload.array("files", 5), async (req, res) => {
   try {
     console.log("===== CREATE PLAN REQUEST =====");
     console.log("req.body:", req.body);
-    console.log("req.file:", req.file);
+    console.log("req.files:", req.files);
 
     const { subject, time, course, exam} = req.body;
 
@@ -39,14 +39,16 @@ app.post("/api/create-plan", upload.single("file"), async (req, res) => {
     
     /* * EXTRACT TEXT FROM PDF */ 
     let uploadedMaterial = ""; 
-    if (req.file) { 
-      console.log( "Uploaded file:", req.file.originalname ); 
-      console.log( "File size:", req.file.size ); 
+    if (req.files) { 
+      console.log( "Uploaded file:", req.files.originalname ); 
       try { 
-        const pdfData = await pdfParse( req.file.buffer ); 
-        uploadedMaterial = pdfData.text; 
-        // console.log( "Extracted PDF text length:", uploadedMaterial.length ); 
-        // console.log( "First 1000 characters:", uploadedMaterial.substring(0, 1000) ); 
+        for (const file of req.files || []) {
+          const pdfData = await pdfParse(file.buffer);
+          uploadedMaterial += `
+        --- ${file.originalname} ---
+        ${pdfData.text}
+        `;
+        }
       } catch (pdfError) { 
         console.error( "PDF extraction error:", pdfError ); 
         return res.status(400).json({ 
@@ -143,12 +145,13 @@ app.post("/api/create-plan", upload.single("file"), async (req, res) => {
             - Divide the total time into several meaningful study tasks.
             - The sum of all task durations must equal exactly ${time} minutes.
             - Tasks should be appropriate for the subject, and appropriate within given time frame.
+            - Don't make any tasks under 3 minutes. It's better to have more time for a more longer task than many short tasks.
             - Give specific tasks relevant to the course they are taking and what exam it is for.
             - Include active learning such as practice, recall, problem solving, or self-testing when appropriate.
             - Do not make every task the same length.
-            - Return only the study plan in the requested structured format. 
             - Use the user uploaded notes to parse what they are learning and generate practice questions based on the notes specifically.
             - If the user uploads textbook files, let the user know what pages they can reference when studying.
+            - If course and school are provided, use them to make the study plan more specific. Otherwise, create the plan based on the subject alone.
             - Use the "material" field to reference the uploaded material.
             - If you can identify the PDF pages containing relevant information, put them in:
                 "material": {

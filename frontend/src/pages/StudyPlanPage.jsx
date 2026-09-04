@@ -20,6 +20,7 @@ function StudyPlanPage() {
   // Which tasks have actually been completed 
   const [completedSteps, setCompletedSteps] = useState([]); 
   const [expandedPractice, setExpandedPractice] = useState([]);
+  const [finished, setFinished] = useState(false);
 
   if (!plan) { 
     return ( 
@@ -43,25 +44,34 @@ function StudyPlanPage() {
         return previous; 
       } 
         return [...previous, index]; 
+
+      if (updated.length === plan.length) {
+        setFinished(true);
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+      }
+      return updated;
     }); 
     // Leave focus mode 
-      setActiveStep(null); } 
-  
-    // Called when the user clicks Pause 
-    function pauseStep() { 
-    // Simply leave focus mode. 
-      setActiveStep(null); 
-    } 
+    setActiveStep(null); 
+  } 
 
-    function togglePractice(index) { 
-      setExpandedPractice((previous) => { 
-        if (previous.includes(index)) { 
-          return previous.filter((item) => item !== index); 
-        } 
-        return [...previous, index]; 
-      }); 
-    
-    }
+    // Called when the user clicks Pause 
+  function pauseStep() { 
+  // Simply leave focus mode. 
+    setActiveStep(null); 
+  } 
+
+  function togglePractice(index) { 
+    setExpandedPractice((previous) => { 
+      if (previous.includes(index)) { 
+        return previous.filter((item) => item !== index); 
+      } 
+      return [...previous, index]; 
+    }); 
+  
+  }
 
     // If a task is currently active, show focus mode 
   if (activeStep !== null) {
@@ -162,6 +172,14 @@ function StudyPlanPage() {
 
   /*-------REGULAR STUDY PLAN--------*/
 
+  if (finished) {
+    return (
+      <div className="finished-screen">
+        <h1>🎉 You're done studying!</h1>
+        <p>Great job!</p>
+      </div>
+    );
+  }
   return (
     <div className="study-plan-page">
       {/* TimerPopup component removed from top-level layout */}

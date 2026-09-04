@@ -1,16 +1,14 @@
 function CourseSelector({
   course,
   setCourse,
-  exam,
-  setExam,
-  customExam,
-  setCustonExam
+  school,
+  setSchool,
 }) {
 
   return (
     <div className="course-selector">
       <label>
-        What course are you studying?
+        Course Information (optional)
       </label>
       <input
         type="text"
@@ -18,7 +16,20 @@ function CourseSelector({
         onChange={(e) => setCourse(e.target.value)}
         placeholder="e.g. Biology 101"
       />
-
+      {course.trim() !== "" && ( //.trim() means get rid of white space
+        <div>
+          <label>
+            Enter Your School
+          </label>
+          <input
+            type="text"
+            value={school}
+            onChange={(e) => setSchool(e.target.value)}
+            placeholder="e.g. UCLA"
+          />
+        </div>
+      )}
+      {/*
       <label>
         What are you preparing for?
       </label>
@@ -27,7 +38,7 @@ function CourseSelector({
         onChange={(e) => setExam(e.target.value)}
       >
         <option value="">
-          Select an exam
+          Select an Exam
         </option>
         <option value="Quiz">
           Quiz
@@ -45,11 +56,11 @@ function CourseSelector({
       {exam === "Other" && (
         <input
           type="text"
-          value={customExam}
-          onChange={(event) => setCustomExam(event.target.value)}
+          value={exam}
+          onChange={(event) => setExam(event.target.value)}
           placeholder="Enter your exam"
         />
-      )}
+      )} */}
     </div>
   );
 }

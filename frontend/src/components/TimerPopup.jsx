@@ -104,11 +104,6 @@ const TimerPopup = forwardRef(
       Open Floating Timer
     </button>
   ); 
-  {/*(
-    <button onClick={openPopup}>
-      Open Floating Timer
-    </button>
-  ); //don't want it showing up on the studyplanpage itself only when in focus mode */}
 });
 
 export default TimerPopup;
