@@ -447,10 +447,25 @@ button {
   width: 100vw;
   height: 100vh;
   overflow-y: auto;
-  background: #111827;
+
+  background:
+    radial-gradient(
+      circle at 20% 10%,
+      rgba(150, 141, 203, 0.25),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 90%,
+      rgba(92, 84, 137, 0.204),
+      transparent 30%
+    ),
+    #18172a;
+
   display: flex;
   justify-content: center;
+
   color: white;
+
   z-index: 9999;
   box-sizing: border-box;
   padding: 60px 20px;
@@ -480,6 +495,7 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-bottom: 20px;
 }
 
 .focus-task {
@@ -608,4 +624,3 @@ p {
   font-size: 18px;
   margin-top: 25px;
 }
-
