@@ -22,6 +22,19 @@ function StudyPlanPage() {
   const [expandedPractice, setExpandedPractice] = useState([]);
   const [finished, setFinished] = useState(false);
 
+  // After finishing every task, go back home after 2 seconds.
+  // (An effect, so the timer is cleaned up if the page is left early.
+  // Hooks must stay above the early return below.)
+  useEffect(() => {
+    if (!finished) {
+      return;
+    }
+    const redirect = setTimeout(() => {
+      navigate("/");
+    }, 2000);
+    return () => clearTimeout(redirect);
+  }, [finished, navigate]);
+
   if (!plan) { 
     return ( 
     <div> 
@@ -35,27 +48,27 @@ function StudyPlanPage() {
     setActiveStep(index);
     timerPopupRef.current?.openPopup();
   }
-
-
+ 
   // Called when the timer reaches zero 
-  function completeStep(index) { 
-    setCompletedSteps((previous) => { 
-      if (previous.includes(index)) { 
-        return previous; 
-      } 
-        return [...previous, index]; 
+  function completeStep(index) {
+    // Work out the new list of completed steps first, so we can check
+    // whether every step is done (state updaters can't safely trigger
+    // other state changes).
+    const updated = completedSteps.includes(index)
+      ? completedSteps
+      : [...completedSteps, index];
 
-      if (updated.length === plan.length) {
-        setFinished(true);
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
-      }
-      return updated;
-    }); 
-    // Leave focus mode 
-    setActiveStep(null); 
-  } 
+    setCompletedSteps(updated);
+
+    // Leave focus mode
+    setActiveStep(null);
+
+    // Every task done: show the finished screen (the effect above
+    // redirects home after 2 seconds).
+    if (updated.length === plan.length) {
+      setFinished(true);
+    }
+  }
 
     // Called when the user clicks Pause 
   function pauseStep() { 
