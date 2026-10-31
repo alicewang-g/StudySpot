@@ -46,8 +46,14 @@ function Home() {
           body: formData
         }
       );
-      console.log("File before sending:", files);
       const data = await response.json();
+      // Show server-side errors (e.g. unreadable PDF) instead of navigating
+      // to an empty plan.
+      if (!response.ok) {
+        setError(data.error || "Something went wrong. Please try again.");
+        setLoading(false);
+        return;
+      }
       if (data.valid === false) {
         setError("That is not a valid subject. Please enter another subject.");
         setLoading(false);

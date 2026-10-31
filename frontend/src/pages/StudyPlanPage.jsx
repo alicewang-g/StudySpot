@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom"; 
-import { useState, useRef } from "react"; 
+import { useState, useRef, useEffect } from "react"; 
 
 import StudyStep from "../components/StudyStep"; 
 import TimerPopup from "../components/TimerPopup";

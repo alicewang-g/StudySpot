@@ -112,7 +112,7 @@ app.get("/", (req, res) => {
   res.send("Backend is working!");
 });
 
-app.post("/api/create-plan", upload.array("files", 5), async (req, res) => {
+app.post("/api/create-plan",  handleUpload, async (req, res) => {
   try {
     console.log("===== CREATE PLAN REQUEST =====");
     console.log("req.body:", req.body);
@@ -122,7 +122,6 @@ app.post("/api/create-plan", upload.array("files", 5), async (req, res) => {
 
     console.log("Subject:", subject);
     console.log("Time:", time);
-    console.log("Exam:", exam);
     
     /* * EXTRACT TEXT FROM PDF */ 
     let uploadedMaterial = "";
